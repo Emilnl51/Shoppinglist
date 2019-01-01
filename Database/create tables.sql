@@ -1,6 +1,8 @@
 
 CREATE DATABASE ShoppingList;
 
+USE DATABASE ShoppingList;
+
 CREATE TABLE ShoppingList(
 Id INT NOT NULL auto_increment,
 ListName VARCHAR(50) NOT NULL,
