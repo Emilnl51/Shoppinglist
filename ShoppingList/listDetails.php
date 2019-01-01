@@ -6,8 +6,13 @@ $listName = $_GET["listName"];
 $rows = getAllListItems($listId);
 
 if (isset($_POST['btnAdd'])) {
-    insertItem($listId, $_POST["txtAdd"]);
-    header("Location: " . $_SERVER['REQUEST_URI']);
+    $url = $_SERVER['REQUEST_URI'];
+    if ($listId == 0) {
+        $listId = insertList($listName); 
+        $url = "listDetails.php?listID=$listId&listName=$listName";
+    }
+    insertItem($listId, $_POST["txtItem"]);
+    header("Location: " . $url);
     exit();
 }
 
@@ -34,17 +39,32 @@ if (isset($_POST["Save"])) {
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
-    	<!-- Gör om detta till ett formulär där jag kan spara listans namn i ShoppingList tabellen -->
     	<div class="container-fluid">
-    		<h1><?php echo $listName;?></h1>
+    		<div class="row" style="padding-right: 20px; padding-top: 20px">
+    			<div class="col-xs-10">
+    				<form method="post" id="frmList">
+    					<input type="text" name="txtListName" value="<?php echo $listName;?>" style="width: 100%" />
+    				</form>
+    			</div>
+    			<div class="col-xs-1">
+    				<button type="submit" name="Save" value="Save" form="frmList">
+    					<span class="glyphicon glyphicon-ok"></span>
+    				</button>
+    			</div>
+    			<div class="col-xs-1">
+    				<button type="submit" name="Delete" value="Delete" form="frmList">
+    					<span class="glyphicon glyphicon-remove"></span>
+    				</button>
+    			</div>
+    		</div>
     		<div class="row" style="padding-right: 20px">
     			<div class="col-xs-10">
-    				<form method="post" id="frmAdd">
+    				<form method="post" id="frmAddItem">
     					<input type="text" name="txtAdd" style="width: 100%" />
     				</form>
     			</div>
     			<div class="col-xs-1">
-    				<button type="submit" name="btnAdd" value="Add" form="frmAdd">
+    				<button type="submit" name="btnAdd" value="Add" form="frmAddItem">
     					<span class="glyphicon glyphicon-plus"></span>
     				</button>
     			</div>

@@ -38,4 +38,13 @@ function updateItem($listId, $itemId, $itemName) {
     
     getConnection()->exec($sql);
 }
+
+function insertList($listName) {
+    $sql = sprintf(
+        "INSERT INTO shoppinglist (Id, ListName) VALUES (null, '%s');",
+        $listName);
+    $conn = getConnection();
+    $conn->exec($sql);
+    return $conn->lastInsertId();
+}
 ?>
