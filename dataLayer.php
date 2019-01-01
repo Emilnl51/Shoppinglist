@@ -10,7 +10,7 @@ function getConnection() {
 
 function getAllListItems($listId) {
     $sql = sprintf(
-        "SELECT * FROM shoppinglist sl INNSER JOIN listitem li ON sl.id = li.listId WHERE sl.id = %d;", 
+        "SELECT * FROM shoppinglist sl INNER JOIN listitem li ON sl.id = li.listId WHERE sl.id = %d;", 
         $listId);
 
     $statement = getConnection()->query($sql);
