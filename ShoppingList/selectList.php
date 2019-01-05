@@ -1,9 +1,6 @@
 <?php
-    include 'dataLayer.php';
-    $sql = "SELECT * FROM ShoppingList";
-//    echo nl2br($sql."\n");
-    $statement = getConnection()->query($sql);
-    $rows = $statement->fetchAll();
+include "dataLayer.php";
+$shoppingLists = getAllShoppingLists();
 
 ?>
 <html>
@@ -12,8 +9,10 @@
     <body>
     	<a href="listDetails.php?listID=0&listName=NewList">New list</a> 
     	<br />
-    <?php foreach ($rows as $row) {
-        echo "<a href='listDetails.php?listID={$row["Id"]}&listName={$row["ListName"]}'>{$row["ListName"]}</a>"."<br />";
-  			 }?>
+        <?php foreach ($shoppingLists as $shoppingList) {
+            echo "<a href='listDetails.php?listID={$shoppingList->id}".
+            "&listName={$shoppingList->listName}'>{$shoppingList->listName}</a>".
+            "<br />";
+        }?>
     </body>
 </html>
