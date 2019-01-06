@@ -5,12 +5,8 @@ $listName = $_GET["listName"];
 
 $rows = getAllListItems($listId);
 
-if (isset($_POST['btnAdd'])) {
+if (isset($_POST['btnAddItem'])) {
     $url = $_SERVER['REQUEST_URI'];
-    if ($listId == 0) {
-        $listId = insertList($listName); 
-        $url = "listDetails.php?listID=$listId&listName=$listName";
-    }
     insertItem($listId, $_POST["txtAdd"]);
     header("Location: " . $url);
     exit();
@@ -92,11 +88,11 @@ if (isset($_POST["btnDeleteList"])) {
     		<div class="row" style="padding-right: 20px">
     			<div class="col-xs-10">
     				<form method="post" id="frmAddItem">
-    					<input type="text" name="txtAdd" style="width: 100%" />
+    					<input type="text" name="txtAddItem" style="width: 100%" />
     				</form>
     			</div>
     			<div class="col-xs-1">
-    				<button type="submit" name="btnAdd" value="Add" form="frmAddItem">
+    				<button type="submit" name="btnAddItem" value="Add" form="frmAddItem">
     					<span class="glyphicon glyphicon-plus"></span>
     				</button>
     			</div>
