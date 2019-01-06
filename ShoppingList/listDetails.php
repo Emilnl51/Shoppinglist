@@ -7,7 +7,7 @@ $rows = getAllListItems($listId);
 
 if (isset($_POST['btnAddItem'])) {
     $url = $_SERVER['REQUEST_URI'];
-    insertItem($listId, $_POST["txtAdd"]);
+    insertItem($listId, $_POST["txtAddItem"]);
     header("Location: " . $url);
     exit();
 }
