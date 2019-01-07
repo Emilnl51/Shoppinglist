@@ -5,12 +5,51 @@ $listName = $_GET["listName"];
 
 $rows = getAllListItems($listId);
 
-if (isset($_POST['btnAddItem'])) {
+function debugToBrowserConsole ( $msg ) {
+    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
+    echo "<script>console.debug( \"PHP DEBUG: $msg\" );</script>";
+}
+function errorToBrowserConsole ( $msg ) {
+    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
+    echo "<script>console.error( \"PHP ERROR: $msg\" );</script>";
+}
+function warnToBrowserConsole ( $msg ) {
+    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
+    echo "<script>console.warn( \"PHP WARNING: $msg\" );</script>";
+}
+function logToBrowserConsole ( $msg ) {
+    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
+    echo "<script>console.log( \"PHP LOG: $msg\" );</script>";
+}
+
+# Convenience functions
+function d2c ( $msg ) { debugToBrowserConsole( $msg ); }
+function e2c ( $msg ) { errorToBrowserConsole( $msg ); }
+function w2c ( $msg ) { warnToBrowserConsole( $msg ); }
+function l2c ( $msg ) { logToBrowserConsole( $msg ); }
+
+if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "") {
     $url = $_SERVER['REQUEST_URI'];
+
+    e2c($listName);
+    e2c($listId);
+    
+    if ($listId == 0) {
+        $listName = $_POST['txtListName'];
+        $listId = insertList($listName);
+        $url = "listDetails.php?listID=$listId&listName=$listName";
+    }
+    
+    if($listId != 0 && $listName != $_POST['txtListName']){
+        $listName = $_POST['txtListName'];
+        updateListName($listId, $listName);
+        $url = "listDetails.php?listID=$listId&listName=$listName";
+    }
+    
     insertItem($listId, $_POST["txtAddItem"]);
     header("Location: " . $url);
     exit();
-}
+}   
 
 if (isset($_POST["btnDeleteItem"])) {
     deleteItem($listId, $_POST["itemId"]);
@@ -60,23 +99,29 @@ if (isset($_POST["btnDeleteList"])) {
     </head>
     <body>
     	<div class="container-fluid">
-        	<div>
-        		<a href="selectList.php">Back</a>
-        	</div>
-    		<div class="row" style="padding-right: 20px; padding-top: 20px">
+    		<div class="row" style="padding-top:15px">
+        		<div class="col-xs-1">
+            		<form action="selectList.php" method="get">
+        				<button type="submit">
+        					<span class="glyphicon glyphicon-arrow-left"></span>
+        				</button>
+            		</form>
+        		</div>
+			</div>
+    		<div class="row">
     			<div class="col-xs-10">
-    				<form method="post" id="frmList">
+					<form method="post" id="frmList">
     					<input type="text" name="txtListName" value="<?php echo $listName;?>" style="width: 100%" />
     				</form>
-    			</div>
+				</div>
     			<div class="col-xs-1">
-    				<button type="submit" name="btnSaveList" value="Save" form="frmList">
+    				<button type="button" name="btnSaveList" value="Save" form="frmList">
     					<span class="glyphicon glyphicon-ok"></span>
     				</button>
     			</div>
     			<div class="col-xs-1">
     				<button 
-    					type="submit" 
+    					type="button" 
     					name="btnDeleteList" 
     					value="Delete" 
     					form="frmList" 
@@ -85,20 +130,18 @@ if (isset($_POST["btnDeleteList"])) {
     				</button>
     			</div>
     		</div>
-    		<div class="row" style="padding-right: 20px">
-    			<div class="col-xs-10">
-    				<form method="post" id="frmAddItem">
-    					<input type="text" name="txtAddItem" style="width: 100%" />
-    				</form>
+    		<div class="row">
+    			<div class="col-xs-10" style="padding-bottom:15px">
+					<input type="text" name="txtAddItem" style="width: 100%" form="frmList"/>
     			</div>
     			<div class="col-xs-1">
-    				<button type="submit" name="btnAddItem" value="Add" form="frmAddItem">
+    				<button type="submit" name="btnAddItem" value="Add" form="frmList">
     					<span class="glyphicon glyphicon-plus"></span>
     				</button>
     			</div>
     		</div> <!-- Row -->
 			<?php foreach ($rows as $row) { ?>
-        		<div class="row" style="padding-right: 20px">
+        		<div class="row">
 	    			<div class="col-xs-10">
         				<form method="post" id="<?php echo 'frmItem'.$row['Id'];?>">
         					<input type="text" name="txtItem"
@@ -118,10 +161,15 @@ if (isset($_POST["btnDeleteList"])) {
         			</div>
 	    		</div> <!-- Row -->
     		<?php }?>
-           	<div>
-        		<a href="selectList.php">Back</a>
-        	</div>
-    		
+    		<div class="row" padding-top="20px">
+        		<div class="col-xs-1">
+            		<form action="selectList.php" method="get">
+        				<button type="submit">
+        					<span class="glyphicon glyphicon-arrow-left"></span>
+        				</button>
+            		</form>
+        		</div>
+			</div>
 		</div> <!-- Container -->
     </body>
 </html>

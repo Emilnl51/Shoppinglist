@@ -24,12 +24,12 @@ $shoppingLists = getAllShoppingLists();
         		</div>
 			</div>
             <?php foreach ($shoppingLists as $shoppingList) {
-                echo "<div class='row'>".
-                "<div class='col-xs-12'>".
-                "<a href='listDetails.php?listID={$shoppingList->id}".
-                "&listName={$shoppingList->listName}'>{$shoppingList->listName}</a>".
-                "</div>".
-                "</div>";
+                echo "<div class='row'>
+                    <div class='col-xs-12'>
+                        <a href='listDetails.php?listID={$shoppingList->id}
+                            &listName={$shoppingList->listName}'>{$shoppingList->listName}</a>
+                    </div>
+                </div>";
             }?>
     	</div>
     </body>
