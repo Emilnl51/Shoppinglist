@@ -115,13 +115,13 @@ if (isset($_POST["btnDeleteList"])) {
     				</form>
 				</div>
     			<div class="col-xs-1">
-    				<button type="button" name="btnSaveList" value="Save" form="frmList">
+    				<button type="submit" name="btnSaveList" value="Save" form="frmList">
     					<span class="glyphicon glyphicon-ok"></span>
     				</button>
     			</div>
     			<div class="col-xs-1">
     				<button 
-    					type="button" 
+    					type="submit" 
     					name="btnDeleteList" 
     					value="Delete" 
     					form="frmList" 
