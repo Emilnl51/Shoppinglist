@@ -78,7 +78,8 @@ if (isset($_POST["btnDeleteList"])) {
     						name="txtListName" 
     						value="<?php echo $listName;?>" 
     						style="width: 100%"
-    						<?php if($listId == 0) { ?> autofocus <?php } ?>/>
+    						<?php if($listId == 0) { ?> autofocus <?php } ?>
+    						<?php if($listId == 0) { ?> onfocus="this.select()" <?php } ?> />
     				</form>
 				</div>
     			<div class="col-xs-1">
