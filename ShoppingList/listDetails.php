@@ -1,51 +1,13 @@
 <?php
 include 'dataLayer.php';
+include 'log2Console.php';
 $listId = $_GET["listID"];
 $listName = $_GET["listName"];
 
 $rows = getAllListItems($listId);
 
-function debugToBrowserConsole ( $msg ) {
-    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
-    echo "<script>console.debug( \"PHP DEBUG: $msg\" );</script>";
-}
-function errorToBrowserConsole ( $msg ) {
-    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
-    echo "<script>console.error( \"PHP ERROR: $msg\" );</script>";
-}
-function warnToBrowserConsole ( $msg ) {
-    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
-    echo "<script>console.warn( \"PHP WARNING: $msg\" );</script>";
-}
-function logToBrowserConsole ( $msg ) {
-    $msg = str_replace('"', "''", $msg);  # weak attempt to make sure there's not JS breakage
-    echo "<script>console.log( \"PHP LOG: $msg\" );</script>";
-}
-
-# Convenience functions
-function d2c ( $msg ) { debugToBrowserConsole( $msg ); }
-function e2c ( $msg ) { errorToBrowserConsole( $msg ); }
-function w2c ( $msg ) { warnToBrowserConsole( $msg ); }
-function l2c ( $msg ) { logToBrowserConsole( $msg ); }
-
-if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "") {
-    $url = $_SERVER['REQUEST_URI'];
-
-    e2c($listName);
-    e2c($listId);
-    
-    if ($listId == 0) {
-        $listName = $_POST['txtListName'];
-        $listId = insertList($listName);
-        $url = "listDetails.php?listID=$listId&listName=$listName";
-    }
-    
-    if($listId != 0 && $listName != $_POST['txtListName']){
-        $listName = $_POST['txtListName'];
-        updateListName($listId, $listName);
-        $url = "listDetails.php?listID=$listId&listName=$listName";
-    }
-    
+if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" & $listId != 0) {
+    $url = $_SERVER['REQUEST_URI'];    
     insertItem($listId, $_POST["txtAddItem"]);
     header("Location: " . $url);
     exit();
@@ -111,7 +73,12 @@ if (isset($_POST["btnDeleteList"])) {
     		<div class="row">
     			<div class="col-xs-10">
 					<form method="post" id="frmList">
-    					<input type="text" name="txtListName" value="<?php echo $listName;?>" style="width: 100%" />
+    					<input 
+    						type="text" 
+    						name="txtListName" 
+    						value="<?php echo $listName;?>" 
+    						style="width: 100%"
+    						<?php if($listId == 0) { ?> autofocus <?php } ?>/>
     				</form>
 				</div>
     			<div class="col-xs-1">
@@ -131,11 +98,17 @@ if (isset($_POST["btnDeleteList"])) {
     			</div>
     		</div>
     		<div class="row">
-    			<div class="col-xs-10" style="padding-bottom:15px">
-					<input type="text" name="txtAddItem" style="width: 100%" form="frmList"/>
+    			<div class="col-xs-10">
+					<form method="post" id="frmAddItem">
+						<input 
+							type="text" 
+							name="txtAddItem" 
+							style="width: 100%"
+							<?php if($listId != 0) { ?> autofocus <?php } ?>/>
+    				</form>
     			</div>
     			<div class="col-xs-1">
-    				<button type="submit" name="btnAddItem" value="Add" form="frmList">
+    				<button type="submit" name="btnAddItem" value="Add" form="frmAddItem">
     					<span class="glyphicon glyphicon-plus"></span>
     				</button>
     			</div>
@@ -161,7 +134,7 @@ if (isset($_POST["btnDeleteList"])) {
         			</div>
 	    		</div> <!-- Row -->
     		<?php }?>
-    		<div class="row" padding-top="20px">
+    		<div class="row">
         		<div class="col-xs-1">
             		<form action="selectList.php" method="get">
         				<button type="submit">
