@@ -2,8 +2,9 @@
 include 'dataLayer.php';
 $listId = $_GET["listID"];
 $listName = $_GET["listName"];
-
 $rows = getAllListItems($listId);
+
+$listItems = getAllListItems($listId);
 
 if (isset($_POST['btnAdd'])) {
     $url = $_SERVER['REQUEST_URI'];
@@ -96,22 +97,22 @@ if (isset($_POST["btnDeleteList"])) {
     				</button>
     			</div>
     		</div> <!-- Row -->
-			<?php foreach ($rows as $row) { ?>
+			<?php foreach ($listItems as $listItem) {  //foreach($rows as $row){ ?>
         		<div class="row" style="padding-right: 20px">
 	    			<div class="col-xs-10">
-        				<form method="post" id="<?php echo 'frmItem'.$row['Id'];?>">
+        				<form method="post" id="<?php echo 'frmItem'.$listItem->id;?>">
         					<input type="text" name="txtItem"
-        						value="<?php echo $row['ItemName'];?>" style="width: 100%" />
-        					<input type="hidden" name="itemId" value="<?php echo $row['Id'];?>">
+        						value="<?php echo $listItem->itemName;?>" style="width: 100%" />
+        					<input type="hidden" name="itemId" value="<?php echo $listItem->id;?>">
         				</form>
         			</div>
         			<div class="col-xs-1">
-        				<button type="submit" name="btnSaveItem" value="Save" form="<?php echo 'frmItem'.$row['Id'];?>">
+        				<button type="submit" name="btnSaveItem" value="Save" form="<?php echo 'frmItem'.$listItem->id;?>">
         					<span class="glyphicon glyphicon-ok"></span>
         				</button>
         			</div>
         			<div class="col-xs-1">
-        				<button type="submit" name="btnDeleteItem" value="Delete" form="<?php echo 'frmItem'.$row['Id'];?>">
+        				<button type="submit" name="btnDeleteItem" value="Delete" form="<?php echo 'frmItem'.$listItem->id;?>">
         					<span class="glyphicon glyphicon-remove"></span>
         				</button>
         			</div>

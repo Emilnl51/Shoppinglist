@@ -9,6 +9,16 @@ class ShoppingList {
     }
 }
 
+class ListItem {
+    public $id;
+    public $itemName;
+    
+    function __construct($id, $itemName) {
+        $this->id = $id;
+        $this->itemName = $itemName;
+    }
+}
+
 function getConnection() {
     $connection = new PDO("mysql:dbname=shoppinglist;charset=utf8mb4;host=localhost", "root", "",
         array(
@@ -38,7 +48,12 @@ function getAllListItems($listId) {
 
     $statement = getConnection()->query($sql);
     $rows = $statement->fetchAll();
-    return $rows;
+    $listItems = array();
+    foreach ($rows as $key => $row) {
+        $listItems[$key] = new ListItem($row["Id"], $row["ItemName"]);
+    }
+    return $listItems;
+    //return $rows;
 }
 
 function insertItem($listId, $itemName) {
