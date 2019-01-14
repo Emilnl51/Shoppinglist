@@ -3,12 +3,23 @@ include 'dataLayer.php';
 include 'log2Console.php';
 $listId = $_GET["listID"];
 $listName = $_GET["listName"];
+$rows = getAllListItems($listId);
 
+<<<<<<< HEAD
 $listItems = getAllListItems($listId);
-if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" & $listId != 0) {
 
+if (isset($_POST['btnAdd'])) {
+    $url = $_SERVER['REQUEST_URI'];
+    if ($listId == 0) {
+        $listId = insertList($listName); 
+        $url = "listDetails.php?listID=$listId&listName=$listName";
+    }
+    insertItem($listId, $_POST["txtAdd"]);
+=======
+if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" & $listId != 0) {
     $url = $_SERVER['REQUEST_URI'];    
     insertItem($listId, $_POST["txtAddItem"]);
+>>>>>>> Johans-test
     header("Location: " . $url);
     exit();
 }   
@@ -114,8 +125,13 @@ if (isset($_POST["btnDeleteList"])) {
     				</button>
     			</div>
     		</div> <!-- Row -->
+<<<<<<< HEAD
 			<?php foreach ($listItems as $listItem) {  //foreach($rows as $row){ ?>
+        		<div class="row" style="padding-right: 20px">
+=======
+			<?php foreach ($rows as $row) { ?>
         		<div class="row">
+>>>>>>> Johans-test
 	    			<div class="col-xs-10">
         				<form method="post" id="<?php echo 'frmItem'.$listItem->id;?>">
         					<input type="text" name="txtItem"
