@@ -12,7 +12,8 @@ class ShoppingList {
 function getConnection() {
     $connection = new PDO("mysql:dbname=shoppinglist;charset=utf8mb4;host=localhost", "root", "",
         array(
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_EMULATE_PREPARES => false
         )
         );
     return $connection;
@@ -32,11 +33,10 @@ function getAllShoppingLists() {
 
 
 function getAllListItems($listId) {
-    $sql = sprintf(
-        "SELECT * FROM shoppinglist sl INNER JOIN listitem li ON sl.id = li.listId WHERE sl.id = %d;", 
-        $listId);
+    $sql = "SELECT * FROM shoppinglist sl INNER JOIN listitem li ON sl.id = li.listId WHERE sl.id = :listId";
 
-    $statement = getConnection()->query($sql);
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId));
     $rows = $statement->fetchAll();
     return $rows;
 }
