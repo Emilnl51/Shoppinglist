@@ -53,50 +53,53 @@ function getAllListItems($listId) {
         $listItems[$key] = new ListItem($row["Id"], $row["ItemName"]);
     }
     return $listItems;
-    //return $rows;
 }
 
 function insertItem($listId, $itemName) {
-    $sql = sprintf(
-        "INSERT INTO listItem (Id, ListId, ItemName) VALUES (null, %d, '%s');", 
-        $listId, 
-        $itemName);
+    $sql = "INSERT INTO listItem (Id, ListId, ItemName) VALUES (null, :listId, :itemName);"; 
     
-    getConnection()->exec($sql);
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId, ':itemName' => $itemName));
+    
 }
 
 function deleteItem($listId, $itemId) {
-    $sql = sprintf("DELETE FROM listItem WHERE listId = %d AND Id = %d", $listId, $itemId);
-    getConnection()->exec($sql);
+    $sql = "DELETE FROM listItem WHERE listId = :listId AND Id = :itemId";
+    
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId, ':itemId' => $itemId));
+    
 }
 
 function updateItem($listId, $itemId, $itemName) {
-    $sql = sprintf("UPDATE listItem SET itemName = '%s' WHERE listId = %d AND id = %d", 
-        $itemName, $listId, $itemId);
+    $sql = "UPDATE listItem SET itemName = :itemName WHERE listId = :listId AND id = :itemId";
     
-    getConnection()->exec($sql);
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':itemName' => $itemName, ':listId' => $listId, ':itemId' => $itemId));
 }
 
 function insertList($listName) {
-    $sql = sprintf(
-        "INSERT INTO shoppinglist (Id, ListName) VALUES (null, '%s');",
-        $listName);
+    $sql = "INSERT INTO shoppinglist (Id, ListName) VALUES (null, :listName);";
     $conn = getConnection();
-    $conn->exec($sql);
+    $statement = $conn->prepare($sql);
+    $statement->execute(array(':listName' => $listName));
+
     return $conn->lastInsertId();
 }
 
 function updateListName($listId, $listName) {
-    $sql = sprintf("UPDATE shoppinglist SET ListName = '%s' WHERE id = %d",
-        $listName, $listId);
+    $sql = "UPDATE shoppinglist SET ListName = :listName WHERE id = :listId";
     
-    getConnection()->exec($sql);
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listName' => $listName, ':listId' => $listId));
 }
 
 function deleteList($listId) {
-    $sql = sprintf("DELETE FROM listItem WHERE listId = %d", $listId);
-    $sql2 = sprintf("DELETE FROM shoppinglist WHERE id = %d", $listId);
-    getConnection()->exec($sql);
-    getConnection()->exec($sql2);
+    $sql = "DELETE FROM listItem WHERE listId = :listId";
+    $sql2 = "DELETE FROM shoppinglist WHERE id = :listId";
+    $statement = getConnection()->prepare($sql);
+    $statement2 = getConnection()->prepare($sql2);
+    $statement->execute(array(':listId' => $listId, ':listId' => $listId));
+    $statement2->execute(array(':listId' => $listId, ':listId' => $listId));
 }
 ?>
