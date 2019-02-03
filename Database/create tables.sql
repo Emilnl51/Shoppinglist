@@ -1,11 +1,12 @@
 
 CREATE DATABASE ShoppingList;
 
-USE DATABASE ShoppingList;
+USE ShoppingList;
 
 CREATE TABLE ShoppingList(
 Id INT NOT NULL auto_increment,
 ListName VARCHAR(50) NOT NULL,
+ExternalId VARCHAR(36) NOT NULL,
 PRIMARY KEY(Id));
 
 

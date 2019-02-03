@@ -79,7 +79,7 @@ function updateItem($listId, $itemId, $itemName) {
 }
 
 function insertList($listName) {
-    $sql = "INSERT INTO shoppinglist (Id, ListName) VALUES (null, :listName);";
+    $sql = "INSERT INTO shoppinglist (Id, ListName, ExternalId) VALUES (null, :listName, uuid());";
     $conn = getConnection();
     $statement = $conn->prepare($sql);
     $statement->execute(array(':listName' => $listName));
