@@ -20,14 +20,12 @@ $shoppingLists = getAllShoppingLists();
             				<button type="submit">
             					<span class="glyphicon glyphicon-plus"></span>
             				</button>
-            				<input type="hidden" name="listID" value=0>
-            				<input type="hidden" name="listName" value="NewList">
+            				<input type="hidden" name="listId" value=0>
                 		</form>
             		</div>
     			</div>
                 <?php foreach ($shoppingLists as $shoppingList) {
-                    $url = "listDetails.php?listID=".$shoppingList->id.
-                           "&listName=".$shoppingList->listName;
+                    $url = "listDetails.php?listId=".$shoppingList->externalId;                ;
                     echo "<div class='row'>
                         <div class='col-xs-12'>
                             <a href='{$url}'>{$shoppingList->listName}</a>

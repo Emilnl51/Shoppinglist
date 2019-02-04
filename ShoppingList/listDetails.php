@@ -1,11 +1,13 @@
 <?php
 include 'dataLayer.php';
 include 'log2Console.php';
-$listId = $_GET["listID"];
-$listName = $_GET["listName"];
+$externalId = $_GET["listId"];
+$listItems = getAllListItems($externalId);
+$list = getListFromExternalId($externalId);
+$listId = $list->id;
+$listName = $list->listName;
 
-$listItems = getAllListItems($listId);
-if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" & $listId != 0) {
+if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" && $listId != 0) {
 
     $url = $_SERVER['REQUEST_URI'];    
     insertItem($listId, $_POST["txtAddItem"]);
@@ -25,7 +27,7 @@ if (isset($_POST["btnSaveItem"])) {
     exit();
 }
 
-if (isset($_POST["btnSaveList"])) {
+if (isset($_POST["btnSaveList"]) && $_POST["txtListName"] != "") {
     $listName = $_POST["txtListName"];
     if ($listId == 0) {
         $listId = insertList($listName);
@@ -33,7 +35,8 @@ if (isset($_POST["btnSaveList"])) {
     else {
         updateListName($listId, $listName);
     }
-    $url = "listDetails.php?listID=$listId&listName=$listName";
+    $externalId = getExternalIdFromListId($listId);
+    $url = "listDetails.php?listId=$externalId";
     header("Location: " . $url);
     exit();
 }
@@ -77,7 +80,7 @@ if (isset($_POST["btnDeleteList"])) {
     					<input 
     						type="text" 
     						name="txtListName" 
-    						value="<?php echo $listName;?>" 
+    						value="<?php echo $listId == 0 ? 'NewList' : $listName;?>" 
     						style="width: 100%"
     						<?php if($listId == 0) { ?> autofocus <?php } ?>
     						<?php if($listId == 0) { ?> onfocus="this.select()" <?php } ?> />

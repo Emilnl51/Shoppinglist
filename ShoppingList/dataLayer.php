@@ -2,10 +2,12 @@
 class ShoppingList {
     public $id;
     public $listName;
+    public $externalId;
     
-    function __construct($id, $listName) {
+    function __construct($id, $listName, $externalId) {
         $this->id = $id;
         $this->listName = $listName;
+        $this->externalId = $externalId;
     }
 }
 
@@ -30,23 +32,23 @@ function getConnection() {
 }
 
 function getAllShoppingLists() {
-    $sql = sprintf("SELECT * FROM ShoppingList;");
+    $sql = "SELECT * FROM ShoppingList;";
     
     $statement = getConnection()->query($sql);
     $rows = $statement->fetchAll();
     $shoppingLists = array();
     foreach ($rows as $key => $row) {
-        $shoppingLists[$key] = new ShoppingList($row["Id"], $row["ListName"]);
+        $shoppingLists[$key] = new ShoppingList($row["Id"], $row["ListName"], $row["ExternalId"]);
     }
     return $shoppingLists;
 }
 
 
-function getAllListItems($listId) {
-    $sql = "SELECT * FROM ShoppingList sl INNER JOIN ListItem li ON sl.id = li.listId WHERE sl.id = :listId";
+function getAllListItems($externalId) {
+    $sql = "SELECT * FROM ShoppingList sl INNER JOIN ListItem li ON sl.id = li.listId WHERE sl.externalId = :externalId";
 
     $statement = getConnection()->prepare($sql);
-    $statement->execute(array(':listId' => $listId));
+    $statement->execute(array(':externalId' => $externalId));
     $rows = $statement->fetchAll();
     $listItems = array();
     foreach ($rows as $key => $row) {
@@ -101,5 +103,25 @@ function deleteList($listId) {
     $statement2 = getConnection()->prepare($sql2);
     $statement->execute(array(':listId' => $listId, ':listId' => $listId));
     $statement2->execute(array(':listId' => $listId, ':listId' => $listId));
+}
+
+function getListFromExternalId($externalId) {
+    $sql = "SELECT * FROM ShoppingList WHERE ExternalId = :externalId";
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':externalId' => $externalId));
+    $row = $statement->fetch();
+    $shoppingList = new ShoppingList($row["Id"], $row["ListName"], $row["ExternalId"]);
+
+    return $shoppingList;
+}
+
+function getExternalIdFromListId($listId) {
+    $sql = "SELECT * FROM ShoppingList WHERE Id = :listId";
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId));
+    $row = $statement->fetch();
+    $externalId = $row["ExternalId"];
+    
+    return $externalId;
 }
 ?>
