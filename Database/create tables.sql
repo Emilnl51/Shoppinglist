@@ -6,7 +6,7 @@ USE ShoppingList;
 CREATE TABLE ShoppingList(
 Id INT NOT NULL auto_increment,
 ListName VARCHAR(50) NOT NULL,
-ExternalId VARCHAR(36) NOT NULL,
+ExternalId VARCHAR(36) NOT NULL UNIQUE,
 PRIMARY KEY(Id));
 
 
