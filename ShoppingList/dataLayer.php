@@ -1,5 +1,6 @@
 <?php
-class ShoppingList {
+define('COOKIEID',   "externalIds"); 
+ class ShoppingList {
     public $id;
     public $listName;
     public $externalId;
@@ -37,8 +38,13 @@ function getAllShoppingLists() {
     $statement = getConnection()->query($sql);
     $rows = $statement->fetchAll();
     $shoppingLists = array();
+
+    makeSureCookieExists();
+    $externalIds = (array)json_decode($_COOKIE[COOKIEID]);
     foreach ($rows as $key => $row) {
-        $shoppingLists[$key] = new ShoppingList($row["Id"], $row["ListName"], $row["ExternalId"]);
+        if(isset($_COOKIE["listAdmin"]) or in_array($row["ExternalId"], $externalIds)){
+            $shoppingLists[$key] = new ShoppingList($row["Id"], $row["ListName"], $row["ExternalId"]);
+        }
     }
     return $shoppingLists;
 }
@@ -123,5 +129,26 @@ function getExternalIdFromListId($listId) {
     $externalId = $row["ExternalId"];
     
     return $externalId;
+}
+
+function addExternalIdToCookie($externalId){
+    if ($externalId !== "0") {
+        makeSureCookieExists();
+        
+        $json = $_COOKIE[COOKIEID];
+        $externalIds = (array)json_decode($json);
+        if(!in_array($externalId, $externalIds)){
+            array_push($externalIds, $externalId);
+        }
+        $json = json_encode($externalIds);
+        setcookie(COOKIEID, $json, 2147483647, "/");
+    }
+}
+
+function makeSureCookieExists(){
+    if(!isset($_COOKIE[COOKIEID])){
+        $json = json_encode(array());
+        setcookie(COOKIEID, $json, 2147483647, "/");
+    }
 }
 ?>

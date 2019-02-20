@@ -7,6 +7,8 @@ $list = getListFromExternalId($externalId);
 $listId = $list->id;
 $listName = $list->listName;
 
+addExternalIdToCookie($externalId);
+
 if (isset($_POST['btnAddItem']) && $_POST['txtAddItem'] != "" && $listId != 0) {
 
     $url = $_SERVER['REQUEST_URI'];    
