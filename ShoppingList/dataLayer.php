@@ -15,10 +15,12 @@ define('COOKIEID',   "externalIds");
 class ListItem {
     public $id;
     public $itemName;
+    public $done;
     
-    function __construct($id, $itemName) {
+    function __construct($id, $itemName, $done) {
         $this->id = $id;
         $this->itemName = $itemName;
+        $this->done = $done;
     }
 }
 
@@ -51,14 +53,14 @@ function getAllShoppingLists() {
 
 
 function getAllListItems($externalId) {
-    $sql = "SELECT * FROM ShoppingList sl INNER JOIN ListItem li ON sl.id = li.listId WHERE sl.externalId = :externalId";
+    $sql = "SELECT * FROM ShoppingList sl INNER JOIN ListItem li ON sl.id = li.listId WHERE sl.externalId = :externalId ORDER BY Done, ItemName";
 
     $statement = getConnection()->prepare($sql);
     $statement->execute(array(':externalId' => $externalId));
     $rows = $statement->fetchAll();
     $listItems = array();
     foreach ($rows as $key => $row) {
-        $listItems[$key] = new ListItem($row["Id"], $row["ItemName"]);
+        $listItems[$key] = new ListItem($row["Id"], $row["ItemName"], $row["Done"]);
     }
     return $listItems;
 }
@@ -150,5 +152,17 @@ function makeSureCookieExists(){
         $json = json_encode(array());
         setcookie(COOKIEID, $json, 2147483647, "/");
     }
+}
+
+function toggleItemDone($listId, $itemId) {
+    $sql = "SELECT * FROM ListItem WHERE listId = :listId AND id = :itemId";
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId, ':itemId' => $itemId));
+    $row = $statement->fetch();
+    $done = $row["Done"] == 1 ? 0 : 1;
+    
+    $sql = "UPDATE ListItem SET done = :done WHERE listId = :listId AND id = :itemId";
+    $statement = getConnection()->prepare($sql);
+    $statement->execute(array(':listId' => $listId, ':itemId' => $itemId, ':done' => $done));
 }
 ?>

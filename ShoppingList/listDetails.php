@@ -48,6 +48,12 @@ if (isset($_POST["btnDeleteList"])) {
     header("Location: " . "selectList.php");
     exit();
 }
+
+if (isset($_POST["btnDone"])) {
+    toggleItemDone($listId, $_POST["itemId"]);
+    header("Location: " . $_SERVER['REQUEST_URI']);
+    exit();
+}
 ?>
 
 <html>
@@ -59,7 +65,7 @@ if (isset($_POST["btnDeleteList"])) {
         <link rel="stylesheet" type="text/css" href="mystyle.css">
         <script>
 			function checkDelete(){
-    			return confirm('Are you sure?');
+    			return confirm('Are you sure you want to delete this list?');
 			}
 		</script>
     </head>
@@ -72,12 +78,13 @@ if (isset($_POST["btnDeleteList"])) {
         					<span class="glyphicon glyphicon-arrow-left"></span>
         				</button>
             		</form>
-        		</div>
+            	</div>
 			</div>
     		<div class="row">
-    			<div class="col-xs-10">
+    			<div class="col-xs-9">
 					<form method="post" id="frmList">
-    					<input 
+    					<input
+    						id="ListName"
     						type="text" 
     						name="txtListName" 
     						value="<?php echo $listId == 0 ? 'NewList' : $listName;?>" 
@@ -86,28 +93,23 @@ if (isset($_POST["btnDeleteList"])) {
     						<?php if($listId == 0) { ?> onfocus="this.select()" <?php } ?> />
     				</form>
 				</div>
-    			<div class="col-xs-1">
+    			<div class="col-xs-2">
     				<button type="submit" name="btnSaveList" value="Save" form="frmList">
-    					<span class="glyphicon glyphicon-ok"></span>
+    					<span class="glyphicon glyphicon-floppy-disk"></span>
     				</button>
     			</div>
     			<div class="col-xs-1">
-    				<button 
-    					type="submit" 
-    					name="btnDeleteList" 
-    					value="Delete" 
-    					form="frmList" 
-    					onclick="return checkDelete()">
-    						<span class="glyphicon glyphicon-remove"></span>
+    				<button type="submit" name="btnDeleteList" value="Delete" form="frmList" onclick="return checkDelete()">
+    						<span class="glyphicon glyphicon-trash"></span>
     				</button>
     			</div>
     		</div>
     		<div class="row">
-    			<div class="col-xs-10">
+    			<div class="col-xs-9">
 					<form method="post" id="frmAddItem">
 						<input 
 							type="text" 
-							name="txtAddItem" 
+							name="txtAddItem" placeholder="Add item"
 							style="width: 100%"
 							<?php if($listId != 0) { ?> autofocus <?php } ?>/>
     				</form>
@@ -120,21 +122,26 @@ if (isset($_POST["btnDeleteList"])) {
     		</div> <!-- Row -->
 			<?php foreach ($listItems as $listItem) {  //foreach($rows as $row){ ?>
         		<div class="row">
-	    			<div class="col-xs-10">
+	    			<div class="col-xs-9">
         				<form method="post" id="<?php echo 'frmItem'.$listItem->id;?>">
         					<input type="text" name="txtItem"
-        						value="<?php echo $listItem->itemName;?>" style="width: 100%" />
+        						value="<?php echo $listItem->itemName;?>" class="<?php if ($listItem->done === 1) echo "strikeThrough";?>" style="width: 100%" />
         					<input type="hidden" name="itemId" value="<?php echo $listItem->id;?>">
         				</form>
         			</div>
         			<div class="col-xs-1">
         				<button type="submit" name="btnSaveItem" value="Save" form="<?php echo 'frmItem'.$listItem->id;?>">
+        					<span class="glyphicon glyphicon-floppy-disk"></span>
+        				</button>
+        			</div>
+        			<div class="col-xs-1">
+        				<button type="submit" name="btnDone" value="Done" form="<?php echo 'frmItem'.$listItem->id;?>">
         					<span class="glyphicon glyphicon-ok"></span>
         				</button>
         			</div>
         			<div class="col-xs-1">
         				<button type="submit" name="btnDeleteItem" value="Delete" form="<?php echo 'frmItem'.$listItem->id;?>">
-        					<span class="glyphicon glyphicon-remove"></span>
+        					<span class="glyphicon glyphicon-trash"></span>
         				</button>
         			</div>
 	    		</div> <!-- Row -->
